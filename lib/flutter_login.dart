@@ -314,6 +314,10 @@ class FlutterLogin extends StatefulWidget {
       this.initialAuthMode = AuthMode.login,
       this.children,
       this.scrollable = false,
+      this.appearDuration = const Duration(milliseconds: 400),
+      this.appearDelay = const Duration(seconds: 1),
+      this.formLoadDuration = const Duration(milliseconds: 1150),
+      this.formUnloadDuration = const Duration(milliseconds: 300),
       LoginNotifyCallback? notifySuccessCallback,
       LoginNotifyCallback? notifyErrorCallback})
       : assert(
@@ -443,6 +447,18 @@ class FlutterLogin extends StatefulWidget {
   /// Default: false
   final bool scrollable;
 
+  /// Time taken for the initial card appearance animation.
+  final Duration appearDuration;
+
+  /// Time taken for initial animation to begin.
+  final Duration appearDelay;
+
+  /// Time taken for the animated appearances of form items.
+  final Duration formLoadDuration;
+
+  /// Time taken for the animated disappearances of form items.
+  final Duration formUnloadDuration;
+
   /// Called to display a successful notification.
   ///
   /// By default, [showSuccessToast] is used using the [Flushbar] library.
@@ -477,7 +493,6 @@ class _FlutterLoginState extends State<FlutterLogin>
     with TickerProviderStateMixin {
   final GlobalKey<AuthCardState> authCardKey = GlobalKey();
 
-  static const loadingDuration = Duration(milliseconds: 400);
   double _selectTimeDilation = 1.0;
 
   late AnimationController _loadingController;
@@ -490,7 +505,7 @@ class _FlutterLoginState extends State<FlutterLogin>
 
     _loadingController = AnimationController(
       vsync: this,
-      duration: loadingDuration,
+      duration: widget.appearDuration,
     )..addStatusListener((status) {
         if (status == AnimationStatus.forward) {
           _logoController.forward();
@@ -503,14 +518,14 @@ class _FlutterLoginState extends State<FlutterLogin>
       });
     _logoController = AnimationController(
       vsync: this,
-      duration: loadingDuration,
+      duration: widget.appearDuration,
     );
     _titleController = AnimationController(
       vsync: this,
-      duration: loadingDuration,
+      duration: widget.appearDuration,
     );
 
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(widget.appearDelay, () {
       if (mounted) {
         _loadingController.forward();
       }
@@ -839,6 +854,8 @@ class _FlutterLoginState extends State<FlutterLogin>
                         navigateBackAfterRecovery:
                             widget.navigateBackAfterRecovery,
                         scrollable: widget.scrollable,
+                        formLoadDuration: widget.formLoadDuration,
+                        formUnloadDuration: widget.formUnloadDuration,
                         notifySuccessCallback: widget.notifySuccessCallback,
                         notifyErrorCallback: widget.notifyErrorCallback,
                       ),

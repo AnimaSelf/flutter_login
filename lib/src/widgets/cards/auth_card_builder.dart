@@ -51,6 +51,8 @@ class AuthCard extends StatefulWidget {
       this.loginTheme,
       this.navigateBackAfterRecovery = false,
       required this.scrollable,
+      required this.formLoadDuration,
+      required this.formUnloadDuration,
       required this.notifySuccessCallback,
       required this.notifyErrorCallback})
       : super(key: key);
@@ -66,6 +68,8 @@ class AuthCard extends StatefulWidget {
   final bool loginAfterSignUp;
   final LoginUserType userType;
   final bool hideProvidersTitle;
+  final Duration formLoadDuration;
+  final Duration formUnloadDuration;
   final LoginNotifyCallback notifySuccessCallback;
   final LoginNotifyCallback notifyErrorCallback;
 
@@ -133,13 +137,13 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
 
     _formLoadingController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1150),
-      reverseDuration: const Duration(milliseconds: 300),
+      duration: widget.formLoadDuration,
+      reverseDuration: widget.formUnloadDuration,
     );
 
     _routeTransitionController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 5000),
     );
 
     _cardSizeAnimation = Tween<double>(begin: 1.0, end: cardSizeScaleEnd)
