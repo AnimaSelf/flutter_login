@@ -136,7 +136,7 @@ class _Header extends StatefulWidget {
     this.footer,
   });
 
-  final ImageProvider? logo;
+  final dynamic logo;
   final String? logoTag;
   final double logoWidth;
   final String? title;
@@ -207,12 +207,14 @@ class __HeaderState extends State<_Header> {
     final cardWidth = min(MediaQuery.of(context).size.width * 0.75, 360.0);
 
     var logo = displayLogo
-        ? Image(
-            image: widget.logo!,
-            filterQuality: FilterQuality.high,
-            height: logoHeight,
-            width: widget.logoWidth * cardWidth,
-          )
+        ? widget.logo is Widget
+            ? widget.logo
+            : Image(
+                image: widget.logo!,
+                filterQuality: FilterQuality.high,
+                height: logoHeight,
+                width: widget.logoWidth * cardWidth,
+              )
         : const SizedBox.shrink();
 
     if (widget.logoTag != null) {
@@ -284,7 +286,7 @@ class FlutterLogin extends StatefulWidget {
       required this.onRecoverPassword,
       this.title,
 
-      /// The [ImageProvider] or asset path [String] for the logo image to be displayed
+      /// The [ImageProvider], [Widget] or asset path [String] for the logo image to be displayed
       dynamic logo,
       this.messages,
       this.theme,
@@ -314,7 +316,8 @@ class FlutterLogin extends StatefulWidget {
       this.scrollable = false,
       LoginNotifyCallback? notifySuccessCallback,
       LoginNotifyCallback? notifyErrorCallback})
-      : assert((logo is String?) || (logo is ImageProvider?)),
+      : assert(
+            (logo is String?) || (logo is ImageProvider?) || (logo is Widget?)),
         logo = logo is String ? AssetImage(logo) : logo,
         notifySuccessCallback =
             notifySuccessCallback ?? LoginNotifyCallbacks.flushbarSuccessToast,
@@ -345,8 +348,8 @@ class FlutterLogin extends StatefulWidget {
   /// The large text above the login [Card], usually the app or company name
   final String? title;
 
-  /// The image provider for the logo image to be displayed
-  final ImageProvider? logo;
+  /// The image provider or widget for the logo image to be displayed
+  final dynamic logo;
 
   /// Describes all of the labels, text hints, button texts and other auth
   /// descriptions
