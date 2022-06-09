@@ -37,6 +37,14 @@ typedef ConfirmSignupCallback = Future<String?>? Function(String, LoginData);
 /// The result is an error message, callback successes if message is null
 typedef ConfirmRecoverCallback = Future<String?>? Function(String, LoginData);
 
+/// A callback for displaying a notification after an event occurs.
+typedef LoginNotifyCallback = Function(
+  BuildContext context,
+  String title,
+  String message, [
+  Duration? duration,
+]);
+
 class Auth with ChangeNotifier {
   Auth(
       {this.loginProviders = const [],

@@ -20,6 +20,7 @@ import 'src/providers/auth.dart';
 import 'src/providers/login_messages.dart';
 import 'src/providers/login_theme.dart';
 import 'src/regex.dart';
+import 'src/widget_helper.dart';
 import 'src/widgets/cards/auth_card_builder.dart';
 import 'src/widgets/fade_in.dart';
 import 'src/widgets/gradient_box.dart';
@@ -269,6 +270,12 @@ class __HeaderState extends State<_Header> {
   }
 }
 
+class LoginNotifyCallbacks {
+  static LoginNotifyCallback flushbarSuccessToast = showSuccessToast;
+  static LoginNotifyCallback flushbarErrorToast = showErrorToast;
+  static LoginNotifyCallback none = (context, title, message, [duration]) {};
+}
+
 class FlutterLogin extends StatefulWidget {
   FlutterLogin(
       {Key? key,
@@ -304,9 +311,15 @@ class FlutterLogin extends StatefulWidget {
       this.savedPassword = '',
       this.initialAuthMode = AuthMode.login,
       this.children,
-      this.scrollable = false})
+      this.scrollable = false,
+      LoginNotifyCallback? notifySuccessCallback,
+      LoginNotifyCallback? notifyErrorCallback})
       : assert((logo is String?) || (logo is ImageProvider?)),
         logo = logo is String ? AssetImage(logo) : logo,
+        notifySuccessCallback =
+            notifySuccessCallback ?? LoginNotifyCallbacks.flushbarSuccessToast,
+        notifyErrorCallback =
+            notifyErrorCallback ?? LoginNotifyCallbacks.flushbarErrorToast,
         super(key: key);
 
   /// Called when the user hit the submit button when in sign up mode
@@ -426,6 +439,18 @@ class FlutterLogin extends StatefulWidget {
   /// of resizing the window.
   /// Default: false
   final bool scrollable;
+
+  /// Called to display a successful notification.
+  ///
+  /// By default, [showSuccessToast] is used using the [Flushbar] library.
+  /// To disable notifications, use [LoginNotifyCallbacks.none].
+  final LoginNotifyCallback notifySuccessCallback;
+
+  /// Called to display a failed notification.
+  ///
+  /// By default, [showErrorToast] is used using the [Flushbar] library.
+  /// To disable notifications, use [LoginNotifyCallbacks.none].
+  final LoginNotifyCallback notifyErrorCallback;
 
   static String? defaultEmailValidator(value) {
     if (value!.isEmpty || !Regex.email.hasMatch(value)) {
@@ -811,6 +836,8 @@ class _FlutterLoginState extends State<FlutterLogin>
                         navigateBackAfterRecovery:
                             widget.navigateBackAfterRecovery,
                         scrollable: widget.scrollable,
+                        notifySuccessCallback: widget.notifySuccessCallback,
+                        notifyErrorCallback: widget.notifyErrorCallback,
                       ),
                     ),
                     Positioned(

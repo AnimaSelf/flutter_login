@@ -6,11 +6,15 @@ class _ConfirmRecoverCard extends StatefulWidget {
     required this.passwordValidator,
     required this.onBack,
     required this.onSubmitCompleted,
+    required this.notifySuccessCallback,
+    required this.notifyErrorCallback,
   }) : super(key: key);
 
   final FormFieldValidator<String> passwordValidator;
   final VoidCallback onBack;
   final VoidCallback onSubmitCompleted;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   @override
   _ConfirmRecoverCardState createState() => _ConfirmRecoverCardState();
@@ -66,12 +70,12 @@ class _ConfirmRecoverCardState extends State<_ConfirmRecoverCard>
     );
 
     if (error != null) {
-      showErrorToast(context, messages.flushbarTitleError, error);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error);
       setState(() => _isSubmitting = false);
       await _submitController.reverse();
       return false;
     } else {
-      showSuccessToast(context, messages.flushbarTitleSuccess,
+      widget.notifySuccessCallback(context, messages.flushbarTitleSuccess,
           messages.confirmRecoverSuccess);
       setState(() => _isSubmitting = false);
       widget.onSubmitCompleted();

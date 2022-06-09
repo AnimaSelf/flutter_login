@@ -7,12 +7,16 @@ class _ConfirmSignupCard extends StatefulWidget {
     required this.onSubmitCompleted,
     this.loginAfterSignUp = true,
     required this.loadingController,
+    required this.notifySuccessCallback,
+    required this.notifyErrorCallback,
   }) : super(key: key);
 
   final bool loginAfterSignUp;
   final VoidCallback onBack;
   final VoidCallback onSubmitCompleted;
   final AnimationController loadingController;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   @override
   _ConfirmSignupCardState createState() => _ConfirmSignupCardState();
@@ -64,13 +68,13 @@ class _ConfirmSignupCardState extends State<_ConfirmSignupCard>
         ));
 
     if (error != null) {
-      showErrorToast(context, messages.flushbarTitleError, error);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error);
       setState(() => _isSubmitting = false);
       await _fieldSubmitController.reverse();
       return false;
     }
 
-    showSuccessToast(
+    widget.notifySuccessCallback(
         context, messages.flushbarTitleSuccess, messages.confirmSignupSuccess);
     setState(() => _isSubmitting = false);
     await _fieldSubmitController.reverse();
@@ -99,13 +103,13 @@ class _ConfirmSignupCardState extends State<_ConfirmSignupCard>
         termsOfService: auth.getTermsOfServiceResults()));
 
     if (error != null) {
-      showErrorToast(context, messages.flushbarTitleError, error);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error);
       setState(() => _isSubmitting = false);
       await _fieldSubmitController.reverse();
       return false;
     }
 
-    showSuccessToast(
+    widget.notifySuccessCallback(
         context, messages.flushbarTitleSuccess, messages.resendCodeSuccess);
     setState(() => _isSubmitting = false);
     await _fieldSubmitController.reverse();

@@ -12,6 +12,8 @@ class _LoginCard extends StatefulWidget {
     required this.requireAdditionalSignUpFields,
     required this.onSwitchConfirmSignup,
     required this.requireSignUpConfirmation,
+    required this.notifySuccessCallback,
+    required this.notifyErrorCallback,
     this.onSwitchAuth,
     this.onSubmitCompleted,
     this.hideForgotPasswordButton = false,
@@ -35,6 +37,8 @@ class _LoginCard extends StatefulWidget {
   final LoginUserType userType;
   final bool requireAdditionalSignUpFields;
   final bool requireSignUpConfirmation;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   @override
   _LoginCardState createState() => _LoginCardState();
@@ -193,7 +197,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     await _submitController.reverse();
 
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error!);
       Future.delayed(const Duration(milliseconds: 271), () {
         if (mounted) {
           setState(() => _showShadow = true);
@@ -214,7 +218,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
         _switchAuthMode();
         return false;
       } else if (!widget.loginAfterSignUp) {
-        showSuccessToast(
+        widget.notifySuccessCallback(
             context, messages.flushbarTitleSuccess, messages.signUpSuccess);
         _switchAuthMode();
         setState(() => _isSubmitting = false);
@@ -236,7 +240,8 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       final messages = Provider.of<LoginMessages>(context, listen: false);
 
       if (!DartHelper.isNullOrEmpty(error)) {
-        showErrorToast(context, messages.flushbarTitleError, error!);
+        widget.notifyErrorCallback(
+            context, messages.flushbarTitleError, error!);
         return false;
       }
 
@@ -266,7 +271,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     final messages = Provider.of<LoginMessages>(context, listen: false);
 
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error!);
       Future.delayed(const Duration(milliseconds: 271), () {
         if (mounted) {
           setState(() => _showShadow = true);

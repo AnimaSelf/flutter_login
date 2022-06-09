@@ -8,6 +8,8 @@ class _AdditionalSignUpCard extends StatefulWidget {
     this.loginTheme,
     required this.onSubmitCompleted,
     required this.loadingController,
+    required this.notifySuccessCallback,
+    required this.notifyErrorCallback,
   }) : super(key: key) {
     if (formFields.isEmpty) {
       throw RangeError('The formFields array must not be empty');
@@ -22,6 +24,8 @@ class _AdditionalSignUpCard extends StatefulWidget {
   final Function onSubmitCompleted;
   final LoginTheme? loginTheme;
   final AnimationController loadingController;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   @override
   _AdditionalSignUpCardState createState() => _AdditionalSignUpCardState();
@@ -138,11 +142,11 @@ class _AdditionalSignUpCardState extends State<_AdditionalSignUpCard>
 
     await _submitController.reverse();
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error!);
       setState(() => _isSubmitting = false);
       return false;
     } else {
-      showSuccessToast(context, messages.flushbarTitleSuccess,
+      widget.notifySuccessCallback(context, messages.flushbarTitleSuccess,
           messages.signUpSuccess, const Duration(seconds: 4));
       setState(() => _isSubmitting = false);
       // await _loadingController.reverse();

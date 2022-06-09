@@ -9,7 +9,9 @@ class _RecoverCard extends StatefulWidget {
       this.loginTheme,
       required this.navigateBack,
       required this.onSubmitCompleted,
-      required this.loadingController})
+      required this.loadingController,
+      required this.notifySuccessCallback,
+      required this.notifyErrorCallback})
       : super(key: key);
 
   final FormFieldValidator<String>? userValidator;
@@ -18,6 +20,8 @@ class _RecoverCard extends StatefulWidget {
   final LoginTheme? loginTheme;
   final bool navigateBack;
   final AnimationController loadingController;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   final Function onSubmitCompleted;
 
@@ -67,12 +71,12 @@ class _RecoverCardState extends State<_RecoverCard>
     final error = await auth.onRecoverPassword!(auth.email);
 
     if (error != null) {
-      showErrorToast(context, messages.flushbarTitleError, error);
+      widget.notifyErrorCallback(context, messages.flushbarTitleError, error);
       setState(() => _isSubmitting = false);
       await _submitController.reverse();
       return false;
     } else {
-      showSuccessToast(context, messages.flushbarTitleSuccess,
+      widget.notifySuccessCallback(context, messages.flushbarTitleSuccess,
           messages.recoverPasswordSuccess);
       setState(() => _isSubmitting = false);
       widget.onSubmitCompleted();

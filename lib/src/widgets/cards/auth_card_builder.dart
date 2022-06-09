@@ -50,7 +50,9 @@ class AuthCard extends StatefulWidget {
       this.disableCustomPageTransformer = false,
       this.loginTheme,
       this.navigateBackAfterRecovery = false,
-      required this.scrollable})
+      required this.scrollable,
+      required this.notifySuccessCallback,
+      required this.notifyErrorCallback})
       : super(key: key);
 
   final EdgeInsets padding;
@@ -64,6 +66,8 @@ class AuthCard extends StatefulWidget {
   final bool loginAfterSignUp;
   final LoginUserType userType;
   final bool hideProvidersTitle;
+  final LoginNotifyCallback notifySuccessCallback;
+  final LoginNotifyCallback notifyErrorCallback;
 
   final List<UserFormField>? additionalSignUpFields;
 
@@ -341,6 +345,8 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
             hideForgotPasswordButton: widget.hideForgotPasswordButton,
             loginAfterSignUp: widget.loginAfterSignUp,
             hideProvidersTitle: widget.hideProvidersTitle,
+            notifySuccessCallback: widget.notifySuccessCallback,
+            notifyErrorCallback: widget.notifyErrorCallback,
           ),
         );
       case _recoveryIndex:
@@ -351,6 +357,8 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
             loadingController: formController,
             navigateBack: widget.navigateBackAfterRecovery,
             onBack: () => _changeCard(_loginPageIndex),
+            notifySuccessCallback: widget.notifySuccessCallback,
+            notifyErrorCallback: widget.notifyErrorCallback,
             onSubmitCompleted: () {
               if (auth.onConfirmRecover != null) {
                 _changeCard(_confirmRecover);
@@ -372,6 +380,8 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
             loadingController: formController,
             onBack: () => _changeCard(_loginPageIndex),
             loginTheme: widget.loginTheme,
+            notifySuccessCallback: widget.notifySuccessCallback,
+            notifyErrorCallback: widget.notifyErrorCallback,
             onSubmitCompleted: () {
               if (auth.onConfirmSignup != null) {
                 _changeCard(_confirmSignup);
@@ -393,6 +403,8 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
           passwordValidator: widget.passwordValidator!,
           onBack: () => _changeCard(_loginPageIndex),
           onSubmitCompleted: () => _changeCard(_loginPageIndex),
+          notifySuccessCallback: widget.notifySuccessCallback,
+          notifyErrorCallback: widget.notifyErrorCallback,
         );
 
       case _confirmSignup:
@@ -404,6 +416,8 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
                 ? _changeCard(_loginPageIndex)
                 : _changeCard(_additionalSignUpIndex),
             loadingController: formController,
+            notifySuccessCallback: widget.notifySuccessCallback,
+            notifyErrorCallback: widget.notifyErrorCallback,
             onSubmitCompleted: () {
               if (widget.loginAfterSignUp) {
                 _forwardChangeRouteAnimation(_confirmSignUpCardKey).then((_) {

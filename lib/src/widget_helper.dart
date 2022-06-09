@@ -24,7 +24,8 @@ Flushbar showSuccessToast(BuildContext context, String title, String message,
   )..show(context);
 }
 
-Flushbar showErrorToast(BuildContext context, String title, String message) {
+Flushbar showErrorToast(BuildContext context, String title, String message,
+    [Duration? duration]) {
   return Flushbar(
     title: title,
     message: message,
@@ -33,7 +34,7 @@ Flushbar showErrorToast(BuildContext context, String title, String message) {
       size: 28.0,
       color: Colors.white,
     ),
-    duration: const Duration(seconds: 4),
+    duration: duration ?? const Duration(seconds: 4),
     backgroundGradient: LinearGradient(
       colors: [Colors.red[600]!, Colors.red[400]!],
     ),
